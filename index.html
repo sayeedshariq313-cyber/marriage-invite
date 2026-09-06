@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nikah Invitation | Athiya &amp; Osama</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Amiri:wght@400;700&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#260D18; --bg-mid:#4A1B2C; --card-bg:#FFFDF9; --card-inner:#FBF1E7;
+    --ink:#33141E; --ink-soft:#8C6670; --accent:#B8823E; --accent-light:#E9C784; --accent-deep:#7C5322;
+    --blush:#E7B9C4; --rose-deep:#7A2643; --line:rgba(184,130,62,0.35);
+    --shadow:0 16px 40px rgba(38,13,24,0.28);
+  }
+  [data-theme="champagne"]{
+    --bg-deep:#2E1D19; --bg-mid:#573631; --card-bg:#FFFBF4; --card-inner:#FBF0E5;
+    --ink:#3A241F; --ink-soft:#93766C; --accent:#C4895E; --accent-light:#F0CBAE; --accent-deep:#8A5A38;
+    --blush:#F0C7BE; --rose-deep:#93483A; --line:rgba(196,137,94,0.35);
+  }
+  [data-theme="amethyst"]{
+    --bg-deep:#1B1329; --bg-mid:#372850; --card-bg:#FCFAFE; --card-inner:#F4EEFA;
+    --ink:#241A35; --ink-soft:#7E71A0; --accent:#9E82C4; --accent-light:#D6C6EE; --accent-deep:#5F4A87;
+    --blush:#D9C8EA; --rose-deep:#5A3F80; --line:rgba(158,130,196,0.4);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;} }
+
+  body{
+    background:radial-gradient(circle at 50% 0%, var(--bg-mid) 0%, var(--bg-deep) 70%);
+    min-height:100vh; display:flex; justify-content:center;
+    font-family:'Cormorant Garamond', serif; font-weight:400; color:var(--ink);
+    transition:background 0.6s ease;
+  }
+  h1,h2,h3{font-family:'Marcellus', serif; font-weight:400; color:var(--rose-deep);}
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none;}
+  .lang-ur{display:none; direction:rtl; font-family:'Amiri', serif;}
+  body.lang-urdu .lang-en{display:none;} body.lang-urdu .lang-ur{display:block;}
+
+  .app-shell{ width:100%; max-width:460px; min-height:100vh; background:var(--card-inner); position:relative; box-shadow:0 0 70px rgba(0,0,0,0.55); overflow-x:hidden; }
+
+  /* icon helper */
+  .icn{ display:inline-block; vertical-align:middle; fill:none; }
+  .icn.solid{ fill:currentColor; }
+
+  #ambientCanvas, #burstCanvas{position:fixed; inset:0; z-index:997; pointer-events:none;}
+
+  /* ---------- TOP BAR ---------- */
+  .topbar{ position:fixed; top:14px; left:50%; transform:translateX(-50%); width:100%; max-width:460px; padding:0 16px; display:flex; justify-content:space-between; z-index:80; pointer-events:none;}
+  .topbar > *{pointer-events:auto;}
+  .pill{ background:var(--bg-deep); color:var(--accent-light); border:1px solid var(--accent); border-radius:22px; padding:8px 16px; font-size:0.72rem; letter-spacing:0.06em; display:flex; align-items:center; gap:6px; box-shadow:0 6px 16px rgba(0,0,0,0.35);}
+  .theme-row{display:flex; gap:6px;}
+  .theme-dot{width:22px; height:22px; border-radius:50%; border:1.5px solid var(--card-bg); box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+  .theme-dot.rosewood{background:linear-gradient(135deg,#7A2643,#B8823E);}
+  .theme-dot.champagne{background:linear-gradient(135deg,#93483A,#C4895E);}
+  .theme-dot.amethyst{background:linear-gradient(135deg,#5A3F80,#9E82C4);}
+
+  /* ---------- COVER ---------- */
+  #cover{ position:fixed; inset:0; z-index:999; background:var(--bg-deep); overflow:hidden; }
+  .door{ position:absolute; top:0; bottom:0; width:50%; background:linear-gradient(180deg, var(--bg-mid), var(--bg-deep)); transition:transform 1.15s cubic-bezier(.76,0,.24,1), opacity 1.15s ease;}
+  .door.l{ left:0; border-right:2px solid var(--accent); transform-origin:left;}
+  .door.r{ right:0; border-left:2px solid var(--accent); transform-origin:right;}
+  .door .tex{ position:absolute; inset:0; opacity:0.55;}
+  .door.opened.l{ transform:translateX(-100%); opacity:0.2;}
+  .door.opened.r{ transform:translateX(100%); opacity:0.2;}
+  .medallion-wrap{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:5; transition:opacity 0.5s ease;}
+  .medallion-wrap.hide{ opacity:0; pointer-events:none;}
+  .medallion-orbit{ position:relative; width:170px; height:170px; display:flex; align-items:center; justify-content:center;}
+  .orbit-star{ position:absolute; top:50%; left:50%; width:12px; height:12px; margin:-6px; color:var(--accent-light); opacity:0.85;}
+  .medallion{ position:relative; z-index:2; width:118px; height:118px; border-radius:50%; background:radial-gradient(circle, var(--accent-light) 0%, var(--accent) 55%, var(--accent-deep) 100%); border:3px solid var(--accent-light); box-shadow:0 0 0 6px rgba(0,0,0,0.15) inset, 0 10px 30px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; animation:medPulse 2.4s ease-in-out infinite;}
+  @keyframes medPulse{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.045);} }
+  .medallion span{ font-family:'Marcellus', serif; font-size:1.55rem; color:#2A160A;}
+  .medallion .icn{ width:14px; height:14px; color:#2A160A;}
+  .cover-crescent{ width:20px; height:20px; color:var(--accent-light); margin-top:24px;}
+  .cover-caption{ margin-top:8px; color:var(--accent-light); font-size:0.72rem; letter-spacing:0.18em;}
+  .cover-names{ margin-top:8px; color:#fff; font-family:'Marcellus', serif; font-size:1.35rem;}
+  .cover-hint{ margin-top:20px; color:var(--accent); font-size:0.68rem; letter-spacing:0.08em; animation:hintPulse 2s ease-in-out infinite;}
+  @keyframes hintPulse{ 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+  #cover.dismissed{ visibility:hidden; pointer-events:none; }
+
+  /* ---------- HERO ---------- */
+  .hero{ position:relative; padding:78px 24px 30px; text-align:center; background:linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 55%, var(--card-inner) 100%); color:#fff; overflow:hidden;}
+  .bismillah{ font-family:'Amiri', serif; font-size:1.6rem; color:var(--accent-light);}
+  .bismillah-sub{ font-size:0.82rem; color:var(--blush); opacity:0.85; margin-top:4px;}
+
+  .stagger > *{ opacity:0; transform:translateY(10px); transition:opacity 0.7s ease, transform 0.7s ease;}
+  .stagger.show > *:nth-child(1){transition-delay:0.05s;} .stagger.show > *:nth-child(2){transition-delay:0.2s;}
+  .stagger.show > *:nth-child(3){transition-delay:0.38s;} .stagger.show > *:nth-child(4){transition-delay:0.55s;}
+  .stagger.show > *:nth-child(5){transition-delay:0.72s;} .stagger.show > *:nth-child(6){transition-delay:0.9s;}
+  .stagger.show > *{ opacity:1; transform:translateY(0);}
+
+  .arch-frame{ position:relative; margin:30px auto 0; max-width:290px; padding:64px 26px 30px;}
+  .arch-svg{ position:absolute; inset:0; width:100%; height:100%; color:var(--accent);}
+  .arch-content{ position:relative; z-index:1;}
+  .hero-caption{ font-family:'Amiri', serif; font-size:1rem; color:var(--accent-light); letter-spacing:0.1em; margin-bottom:16px;}
+  .hero-names{ font-family:'Marcellus', serif; font-size:1.5rem; line-height:1.5; color:#fff; display:flex; flex-direction:column; align-items:center; gap:8px;}
+  .name-divider{ width:16px; height:16px; color:var(--accent-light);}
+
+  .hero-bottom{ padding:40px 24px 8px; text-align:center; position:relative;}
+  .geo-divider{ display:flex; align-items:center; justify-content:center; gap:10px; width:200px; margin:0 auto 26px;}
+  .geo-divider .gl{ flex:1; height:1px; background:linear-gradient(90deg, transparent, var(--accent), transparent);}
+  .geo-divider .icn{ width:15px; height:15px; color:var(--accent);}
+  .ayat-arabic{ font-family:'Amiri', serif; font-size:1.3rem; color:var(--rose-deep); line-height:2; margin-bottom:12px;}
+  .ayat-translation{ font-size:0.92rem; color:var(--ink-soft); max-width:380px; margin:0 auto 26px; font-style:italic;}
+  .invite-line{ font-size:1rem; color:var(--ink-soft); max-width:360px; margin:0 auto 4px;}
+  .lang-toggle{ display:flex; justify-content:center; gap:0; margin-top:22px;}
+  .lang-chip{ padding:7px 18px; font-size:0.76rem; color:var(--ink-soft); border-bottom:2px solid transparent; letter-spacing:0.03em;}
+  .lang-chip.active{ color:var(--rose-deep); border-bottom-color:var(--accent);}
+
+  /* ---------- SECTIONS ---------- */
+  .section{ padding:20px 18px;}
+  .section-head{ text-align:center; margin-bottom:26px;}
+  .section-head .head-icon{ width:20px; height:20px; color:var(--accent); margin-bottom:8px;}
+  .section-head .ar{ display:block; font-family:'Amiri', serif; color:var(--accent-deep); font-size:1rem; margin-bottom:6px;}
+  .section-head h2{ font-size:1.7rem;}
+
+  .card{ position:relative; background:var(--card-bg); border:1px solid var(--line); border-radius:4px; padding:38px 24px; box-shadow:var(--shadow);}
+  .card-corner{ position:absolute; width:22px; height:22px; color:var(--accent);}
+  .card-corner.bl{bottom:-11px; left:-11px;} .card-corner.br{bottom:-11px; right:-11px;}
+  .card{ overflow:hidden; padding:0 0 34px;}
+  .card-dome{ position:relative; height:58px; margin-bottom:26px; background:linear-gradient(160deg, var(--rose-deep), var(--accent-deep)); border-radius:50% 50% 0 0/100% 100% 0 0; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .card-dome svg{ position:relative; z-index:1; width:20px; height:20px; color:var(--accent-light);}
+  .card-dome .dome-tex{ position:absolute; inset:0; opacity:0.4;}
+  .card-content{ padding:0 24px;}
+
+  .watermark{ position:absolute; top:0; left:0; right:0; bottom:0; z-index:0; opacity:0.16; pointer-events:none;}
+  .section-dark{ background:linear-gradient(180deg, var(--bg-mid), var(--bg-deep)); margin:0 -18px; padding:34px 18px;}
+  .section-dark .section-head h2{ color:#fff;}
+  .section-dark .section-head .ar{ color:var(--accent-light);}
+  .section-dark .section-head .head-icon{ color:var(--accent-light);}
+
+  .nikah-card h3{ font-size:1.5rem; margin-bottom:6px; text-align:center;}
+  .when{ text-align:center; font-family:'Cormorant Garamond', serif; font-style:italic; color:var(--accent-deep); font-size:1.05rem; margin-bottom:24px;}
+  .detail{ padding:15px 0; border-bottom:1px solid var(--line); text-align:center;}
+  .detail:last-of-type{ border-bottom:none;}
+  .detail-label{ display:block; font-family:'Marcellus', serif; font-size:0.8rem; color:var(--accent-deep); letter-spacing:0.05em; margin-bottom:5px;}
+  .detail p{ font-size:0.98rem; color:var(--ink);}
+  .solid-btn{ display:block; width:fit-content; margin:24px auto 0; font-size:0.85rem; padding:12px 28px; border-radius:24px; background:var(--rose-deep); color:#fff; letter-spacing:0.03em;}
+  .solid-btn:hover{ background:var(--accent-deep);}
+
+  .countdown{ display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:34px; flex-wrap:wrap;}
+  .cd-sep{ width:8px; height:8px; color:var(--accent); flex:none;}
+  .cd-box{ text-align:center; background:var(--card-inner); border:1px solid var(--line); border-radius:8px; padding:12px 14px; min-width:64px;}
+  .cd-box .num{ font-family:'Marcellus', serif; font-size:1.9rem; color:var(--rose-deep);}
+  .cd-box .num.tick{ animation:tick 0.35s ease;}
+  @keyframes tick{ 0%{transform:translateY(-6px); opacity:0.3;} 100%{transform:translateY(0); opacity:1;} }
+  .cd-box .lbl{ font-size:0.68rem; letter-spacing:0.03em; color:var(--ink-soft); margin-top:4px;}
+
+  .cal-title{ font-family:'Marcellus', serif; font-size:1.1rem; text-align:center; margin-bottom:16px;}
+  .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; text-align:center; font-size:0.78rem;}
+  .cal-grid .dow{ color:var(--ink-soft); font-size:0.66rem; padding-bottom:6px;}
+  .cal-grid .day{ padding:9px 0; border-radius:6px;}
+  .cal-grid .day.mark{ background:linear-gradient(135deg, var(--accent-light), var(--accent)); color:#2A160A; font-weight:600;}
+  .outline-btn{ display:block; margin:22px auto 0; width:fit-content; font-size:0.82rem; padding:11px 22px; border-radius:24px; border:1.5px solid var(--rose-deep); color:var(--rose-deep);}
+  .outline-btn:hover{ background:var(--rose-deep); color:#fff;}
+
+  .wish{ padding:15px 0; border-bottom:1px solid var(--line); font-size:0.92rem;}
+  .wish .who{ font-family:'Marcellus', serif; color:var(--rose-deep); font-size:1rem; margin-bottom:3px;}
+  .wish .when-w{ font-size:0.66rem; color:var(--ink-soft); margin-top:5px;}
+
+  .field{ margin-bottom:18px;}
+  .field label{ display:block; font-family:'Marcellus', serif; font-size:0.8rem; color:var(--accent-deep); margin-bottom:7px;}
+  .field input, .field select, .field textarea{ width:100%; padding:9px 0; border:none; border-bottom:1px solid var(--line); background:transparent; color:var(--ink); font-family:'Cormorant Garamond', serif; font-size:1rem;}
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:none; border-bottom-color:var(--accent);}
+  .field textarea{ resize:vertical; min-height:60px;}
+  .btn-primary{ background:var(--rose-deep); color:#fff; padding:12px 26px; border-radius:24px; font-size:0.86rem; letter-spacing:0.03em;}
+  .btn-primary:hover{ background:var(--accent-deep);}
+  .form-msg{ margin-top:14px; font-size:0.82rem; color:var(--rose-deep); display:none;}
+  .backend-note{ font-size:0.7rem; color:var(--ink-soft); margin-top:10px; text-align:center;}
+
+  .dua-band{ position:relative; background:linear-gradient(180deg, var(--bg-mid), var(--bg-deep)); padding:54px 24px 90px; text-align:center; overflow:hidden;}
+  .dua-verse{ position:relative; font-family:'Amiri', serif; font-size:1.5rem; color:var(--accent-light); margin-bottom:14px;}
+  .dua-translation{ position:relative; font-size:0.9rem; color:var(--blush); opacity:0.9; max-width:380px; margin:0 auto;}
+  .skyline{ position:absolute; bottom:0; left:0; width:100%; height:70px; color:var(--accent-light); opacity:0.18;}
+
+  .footer-sign{ text-align:center; font-family:'Mrs Saint Delafield', cursive; font-size:1.5rem; color:var(--rose-deep); padding:42px 24px 56px;}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="star8solid" viewBox="0 0 100 100">
+    <polygon points="50,4 58,32 83,17 68,42 96,50 68,58 83,83 58,68 50,96 42,68 17,83 32,58 4,50 32,42 17,17 42,32" fill="currentColor"/>
+  </symbol>
+  <symbol id="star8outline" viewBox="0 0 100 100">
+    <polygon points="50,4 58,32 83,17 68,42 96,50 68,58 83,83 58,68 50,96 42,68 17,83 32,58 4,50 32,42 17,17 42,32" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="crescentStar" viewBox="0 0 100 100">
+    <path d="M60,18 A32,32 0 1 0 60,82 A24,24 0 1 1 60,18 Z" fill="currentColor"/>
+    <polygon points="80,26 83,33 90,34 84,39 86,46 80,42 74,46 76,39 70,34 77,33" fill="currentColor"/>
+  </symbol>
+  <symbol id="mihrabArch" viewBox="0 0 290 330" preserveAspectRatio="none">
+    <path d="M8,330 L8,150 Q8,36 145,8 Q282,36 282,150 L282,330" fill="none" stroke="currentColor" stroke-width="2.5"/>
+    <path d="M26,330 L26,155 Q26,58 145,32 Q264,58 264,155 L264,330" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.55"/>
+  </symbol>
+  <symbol id="mosqueSkyline" viewBox="0 0 400 120" preserveAspectRatio="xMidYMax meet">
+    <g fill="currentColor">
+      <rect x="0" y="112" width="400" height="8"/>
+      <rect x="40" y="40" width="9" height="72"/>
+      <circle cx="44.5" cy="36" r="7"/>
+      <line x1="44.5" y1="10" x2="44.5" y2="28" stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="44.5" cy="8" r="2.6"/>
+      <rect x="351" y="40" width="9" height="72"/>
+      <circle cx="355.5" cy="36" r="7"/>
+      <line x1="355.5" y1="10" x2="355.5" y2="28" stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="355.5" cy="8" r="2.6"/>
+      <rect x="90" y="90" width="40" height="22"/>
+      <path d="M90,90 Q110,62 130,90 Z"/>
+      <rect x="270" y="90" width="40" height="22"/>
+      <path d="M270,90 Q290,62 310,90 Z"/>
+      <rect x="140" y="70" width="120" height="42"/>
+      <path d="M140,70 Q200,12 260,70 Z"/>
+      <line x1="200" y1="12" x2="200" y2="2" stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="200" cy="0" r="2.8"/>
+    </g>
+  </symbol>
+  <pattern id="starTile" width="54" height="54" patternUnits="userSpaceOnUse">
+    <g transform="translate(27,27) scale(0.24)" fill="none" stroke="var(--accent)" stroke-width="6" opacity="0.5">
+      <polygon transform="translate(-50,-50)" points="50,4 58,32 83,17 68,42 96,50 68,58 83,83 58,68 50,96 42,68 17,83 32,58 4,50 32,42 17,17 42,32"/>
+    </g>
+  <pattern id="starTileLight" width="30" height="30" patternUnits="userSpaceOnUse">
+    <g transform="translate(15,15) scale(0.13)" fill="none" stroke="var(--accent-light)" stroke-width="6" opacity="0.7">
+      <polygon transform="translate(-50,-50)" points="50,4 58,32 83,17 68,42 96,50 68,58 83,83 58,68 50,96 42,68 17,83 32,58 4,50 32,42 17,17 42,32"/>
+    </g>
+  </pattern>
+</svg>
+
+<canvas id="ambientCanvas"></canvas>
+<canvas id="burstCanvas"></canvas>
+
+<div class="app-shell">
+
+  <div class="watermark"><svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#starTile)"/></svg></div>
+
+  <div id="cover">
+    <div class="door l"><div class="tex"><svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#starTile)"/></svg></div></div>
+    <div class="door r"><div class="tex"><svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#starTile)"/></svg></div></div>
+    <div class="medallion-wrap" id="medWrap">
+      <div class="medallion-orbit" id="medOrbit">
+        <div class="medallion" id="medallion"><span>A</span><svg class="icn solid" viewBox="0 0 100 100"><use href="#star8solid"/></svg><span>O</span></div>
+      </div>
+      <svg class="icn solid cover-crescent" viewBox="0 0 100 100"><use href="#crescentStar"/></svg>
+      <div class="cover-caption">A Nikah Invitation</div>
+      <div class="cover-names">You're Invited</div>
+      <div class="cover-hint">tap the seal to enter</div>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <div class="pill" onclick="toggleMusic()"><span id="musicIcon">♪</span><span id="musicLabel">Music</span></div>
+    <div class="theme-row">
+      <div class="pill" style="padding:6px 8px;" onclick="setTheme('rosewood')"><span class="theme-dot rosewood"></span></div>
+      <div class="pill" style="padding:6px 8px;" onclick="setTheme('champagne')"><span class="theme-dot champagne"></span></div>
+      <div class="pill" style="padding:6px 8px;" onclick="setTheme('amethyst')"><span class="theme-dot amethyst"></span></div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="stagger" id="heroStagger">
+      <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+      <div class="bismillah-sub lang-en">In the name of Allah, the Most Gracious, the Most Merciful</div>
+      <div class="bismillah-sub lang-ur">اللہ کے نام سے جو نہایت مہربان، رحم فرمانے والا ہے</div>
+
+      <div class="arch-frame">
+        <svg class="arch-svg" viewBox="0 0 290 330" preserveAspectRatio="none" aria-hidden="true"><use href="#mihrabArch"/></svg>
+        <div class="arch-content">
+          <div class="hero-caption">عَقْدُ النِّكَاح</div>
+          <div class="hero-names lang-en"><span>Athiya Iram</span><svg class="icn solid name-divider" viewBox="0 0 100 100"><use href="#star8solid"/></svg><span>Osama Shabbir</span></div>
+          <div class="hero-names lang-ur"><span>عطیہ ارم</span><svg class="icn solid name-divider" viewBox="0 0 100 100"><use href="#star8solid"/></svg><span>اسامہ شبّیر</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-bottom reveal">
+    <div class="geo-divider"><span class="gl"></span><svg class="icn solid" viewBox="0 0 100 100"><use href="#star8solid"/></svg><span class="gl"></span></div>
+    <p class="ayat-arabic">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُمْ مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ</p>
+    <p class="ayat-translation lang-en">"Among His signs is that He created for you, from among yourselves, mates in whom you may find peace, and He placed between you love and mercy." — Qur'an, Surah Ar-Rum 30:21</p>
+    <p class="ayat-translation lang-ur">"اس کی نشانیوں میں سے یہ بھی ہے کہ اس نے تمہاری ہی جنس میں سے تمہارے لیے جوڑے بنائے تاکہ تم ان کے پاس سکون پاؤ، اور تمہارے درمیان محبت اور رحمت رکھ دی۔" — سورۃ الروم، آیت ۲۱</p>
+
+    <p class="invite-line lang-en">Dr. Ata-ur-Rehman &amp; Family request the honour of your presence at the Nikah of his daughter</p>
+    <p class="invite-line lang-ur">ڈاکٹر عطاء الرحمٰن اور خاندان اپنی بیٹی کے نکاح میں آپ کی موجودگی کی خواہش مند ہیں</p>
+
+    <div class="lang-toggle">
+      <div class="lang-chip active" id="chipEn" onclick="setLang('en')">English</div>
+      <div class="lang-chip" id="chipUr" onclick="setLang('ur')">اردو</div>
+    </div>
+  </div>
+
+  <!-- NIKAH DETAILS -->
+  <div class="section">
+    <div class="section-head"><svg class="icn outline head-icon" viewBox="0 0 100 100"><use href="#star8outline"/></svg><span class="ar">النِّكَاح</span><h2 class="lang-en">The Nikah</h2><h2 class="lang-ur">نکاح</h2></div>
+    <div class="card nikah-card">
+      <div class="card-dome"><div class="dome-tex"><svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#starTileLight)"/></svg></div><svg class="icn solid" viewBox="0 0 100 100"><use href="#crescentStar"/></svg></div>
+      <svg class="card-corner icn outline bl" viewBox="0 0 100 100"><use href="#star8outline"/></svg>
+      <svg class="card-corner icn outline br" viewBox="0 0 100 100"><use href="#star8outline"/></svg>
+      <div class="card-content">
+      <h3>Masjid e Syedna Ali (RZ)</h3>
+      <div class="when">Saturday, 24th October 2026 · After Zuhr</div>
+      <div class="detail">
+        <span class="detail-label">Where</span>
+        <p class="lang-en">Tumkur, Karnataka - 572105</p>
+        <p class="lang-ur">تمکور، کرناٹک</p>
+      </div>
+      <div class="detail">
+        <span class="detail-label">A note from the family</span>
+        <p class="lang-en">Your presence and prayers mean a great deal to our family.</p>
+        <p class="lang-ur">آپ کی موجودگی اور دعائیں ہمارے خاندان کے لیے بہت اہم ہیں۔</p>
+      </div>
+      <a class="solid-btn" href="https://www.google.com/maps/place/masjid+e+syedna+ali/@13.3334472,77.0849777,17z" target="_blank" rel="noopener">Open in Google Maps</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- LUNCH / RECEPTION -->
+  <div class="section">
+    <div class="section-head"><svg class="icn outline head-icon" viewBox="0 0 100 100"><use href="#star8outline"/></svg><span class="ar">ضِيَافَة</span><h2 class="lang-en">Lunch</h2><h2 class="lang-ur">ضیافت</h2></div>
+    <div class="card">
+      <div class="card-dome"><div class="dome-tex"><svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#starTileLight)"/></svg></div><svg class="icn solid" viewBox="0 0 100 100"><use href="#star8solid"/></svg></div>
+      <svg class="card-corner icn outline bl" viewBox="0 0 100 100"><use href="#star8outline"/></svg>
+      <svg class="card-corner icn outline br" viewBox="0 0 100 100"><use href="#star8outline"/></svg>
+      <div class="card-content">
+      <h3>Star Convention Hall</h3>
+      <div class="when">After Nikah</div>
+      <div class="detail">
+        <span class="detail-label">Where</span>
+        <p class="lang-en">Near Railway Bridge, Tumkur - 572105</p>
+        <p class="lang-ur">ریلوے پل کے قریب، تمکور - ۵۷۲۱۰۵</p>
+      </div>
+      <a class="solid-btn" href="https://www.google.com/maps/place/STAR+Conventional+Hall/@13.3352405,77.0874807,17z" target="_blank" rel="noopener">Open in Google Maps</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVE THE DATE -->
+  <div class="section section-dark">
+    <div class="section-head"><svg class="icn outline head-icon" viewBox="0 0 100 100"><use href="#star8outline"/></svg><span class="ar">حِفْظُ التَّارِيخ</span><h2 class="lang-en">Save the Date</h2><h2 class="lang-ur">تاریخ محفوظ کریں</h2></div>
+    <div class="card">
+      <div class="card-dome"><div class="dome-tex"><svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#starTileLight)"/></svg></div><svg class="icn solid" viewBox="0 0 100 100"><use href="#star8solid"/></svg></div>
+      <svg class="card-corner icn outline bl" viewBox="0 0 100 100"><use href="#star8outline"/></svg>
+      <svg class="card-corner icn outline br" viewBox="0 0 100 100"><use href="#star8outline"/></svg>
+      <div class="card-content">
+      <div class="countdown">
+        <div class="cd-box"><div class="num" id="cdDays">00</div><div class="lbl">Days</div></div>
+        <svg class="icn solid cd-sep" viewBox="0 0 100 100"><use href="#star8solid"/></svg>
+        <div class="cd-box"><div class="num" id="cdHours">00</div><div class="lbl">Hrs</div></div>
+        <svg class="icn solid cd-sep" viewBox="0 0 100 100"><use href="#star8solid"/></svg>
+        <div class="cd-box"><div class="num" id="cdMins">00</div><div class="lbl">Min</div></div>
+        <svg class="icn solid cd-sep" viewBox="0 0 100 100"><use href="#star8solid"/></svg>
+        <div class="cd-box"><div class="num" id="cdSecs">00</div><div class="lbl">Sec</div></div>
+      </div>
+      <div class="cal-title">October 2026</div>
+      <div class="cal-grid" id="calGrid"></div>
+      <button class="outline-btn" onclick="downloadICS()">Add to my calendar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GUESTBOOK -->
+  <div class="section">
+    <div class="section-head"><svg class="icn outline head-icon" viewBox="0 0 100 100"><use href="#star8outline"/></svg><h2 class="lang-en">Blessings</h2></div>
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-dome"><div class="dome-tex"><svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#starTileLight)"/></svg></div><svg class="icn solid" viewBox="0 0 100 100"><use href="#star8solid"/></svg></div>
+      <svg class="card-corner icn outline bl" viewBox="0 0 100 100"><use href="#star8outline"/></svg>
+      <svg class="card-corner icn outline br" viewBox="0 0 100 100"><use href="#star8outline"/></svg>
+      <div class="card-content">
+      <div class="field"><label>Your name</label><input type="text" id="wishName" placeholder="Your name"></div>
+      <div class="field"><label>Your message</label><textarea id="wishText" placeholder="Write your dua or wishes for the couple..."></textarea></div>
+      <button class="btn-primary" onclick="addWish()">Post blessing</button>
+      <p class="backend-note" id="wishStatus">Not connected to a shared guestbook yet — blessings will only show on your own screen for now.</p>
+      </div>
+    </div>
+    <div id="wishList"></div>
+  </div>
+
+  <!-- RSVP -->
+  <div class="section">
+    <div class="section-head"><svg class="icn outline head-icon" viewBox="0 0 100 100"><use href="#star8outline"/></svg><span class="ar">تَأْكِيدُ الْحُضُور</span><h2 class="lang-en">RSVP</h2><h2 class="lang-ur">آر ایس وی پی</h2></div>
+    <div class="card">
+      <div class="card-dome"><div class="dome-tex"><svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#starTileLight)"/></svg></div><svg class="icn solid" viewBox="0 0 100 100"><use href="#crescentStar"/></svg></div>
+      <svg class="card-corner icn outline bl" viewBox="0 0 100 100"><use href="#star8outline"/></svg>
+      <svg class="card-corner icn outline br" viewBox="0 0 100 100"><use href="#star8outline"/></svg>
+      <div class="card-content">
+      <div class="field"><label>Full name</label><input type="text" id="rsvpName" placeholder="Your full name"></div>
+      <div class="field"><label>Attending</label>
+        <select id="rsvpAttend"><option>Attending</option><option>Unable to attend</option></select>
+      </div>
+      <div class="field"><label>Number of guests</label><input type="number" id="rsvpGuests" min="1" value="1"></div>
+      <div class="field"><label>Message (optional)</label><textarea id="rsvpMsg" placeholder="Anything you'd like to share"></textarea></div>
+      <button class="btn-primary" onclick="submitRSVP()">Send RSVP</button>
+      <div class="form-msg" id="rsvpConfirm"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DUA -->
+  <div class="dua-band">
+    <div class="dua-verse">وَعَاشِرُوهُنَّ بِالْمَعْرُوفِ</div>
+    <p class="dua-translation">"And live with them in kindness." — Qur'an 4:19. May Allah bless this union with love, mercy, and lasting companionship.</p>
+    <svg class="skyline" viewBox="0 0 400 120" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><use href="#mosqueSkyline"/></svg>
+  </div>
+
+  <p class="footer-sign">With love, the family of Dr. Ata-ur-Rehman</p>
+</div>
+
+<script>
+  const CONFIG = { APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxiL7UytJN8RPYILzIvxM8jZ6dk8U8ENskebRWtwxproWL_V4l6jVo-Qpma83q-BcUI/exec' };
+  const backendReady = () => CONFIG.APPS_SCRIPT_URL && !CONFIG.APPS_SCRIPT_URL.includes('PASTE_YOUR');
+
+  async function postToSheet(payload){
+    if(!backendReady()) return {ok:false};
+    try{ await fetch(CONFIG.APPS_SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) }); return {ok:true}; }
+    catch(err){ return {ok:false}; }
+  }
+  async function getFromSheet(){
+    if(!backendReady()) return null;
+    try{ const res = await fetch(CONFIG.APPS_SCRIPT_URL); return await res.json(); } catch(err){ return null; }
+  }
+
+  function setLang(l){
+    document.body.classList.toggle('lang-urdu', l==='ur');
+    document.getElementById('chipEn').classList.toggle('active', l==='en');
+    document.getElementById('chipUr').classList.toggle('active', l==='ur');
+  }
+  function setTheme(t){ document.documentElement.setAttribute('data-theme', t === 'rosewood' ? '' : t); }
+
+  /* ---------------- ORBIT STARS AROUND MEDALLION ---------------- */
+  (function buildOrbit(){
+    const orbit = document.getElementById('medOrbit');
+    const n = 8, r = 78;
+    for(let i=0;i<n;i++){
+      const angle = (360/n)*i;
+      const el = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      el.setAttribute('viewBox','0 0 100 100');
+      el.setAttribute('class','orbit-star');
+      el.style.transform = `translate(-50%,-50%) rotate(${angle}deg) translate(${r}px) rotate(${-angle}deg)`;
+      el.innerHTML = '<use href="#star8solid"></use>';
+      orbit.appendChild(el);
+    }
+  })();
+
+  /* ---------------- COVER REVEAL ---------------- */
+  const cover = document.getElementById('cover');
+  const doorL = document.querySelector('.door.l');
+  const doorR = document.querySelector('.door.r');
+  const medWrap = document.getElementById('medWrap');
+  const heroStagger = document.getElementById('heroStagger');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('medallion').addEventListener('click', ()=>{
+    medWrap.classList.add('hide');
+    doorL.classList.add('opened');
+    doorR.classList.add('opened');
+    heroStagger.classList.add('show');
+    startMusic();
+    burstParticles(window.innerWidth/2, window.innerHeight/2);
+    document.body.style.overflow = 'auto';
+    setTimeout(()=>cover.classList.add('dismissed'), 1200);
+  });
+
+  const weddingTime = new Date('2026-10-24T13:00:00+05:30').getTime();
+  let lastSec = -1;
+  function updateCountdown(){
+    const diff = weddingTime - Date.now();
+    if(diff<=0) return;
+    const d=Math.floor(diff/86400000), h=Math.floor(diff/3600000%24), m=Math.floor(diff/60000%60), s=Math.floor(diff/1000%60);
+    setNum('cdDays', d); setNum('cdHours', h); setNum('cdMins', m);
+    if(s!==lastSec){ setNum('cdSecs', s, true); lastSec = s; }
+  }
+  function setNum(id, val, tick){
+    const el = document.getElementById(id);
+    el.textContent = String(val).padStart(2,'0');
+    if(tick){ el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); }
+  }
+  setInterval(updateCountdown,1000); updateCountdown();
+
+  (function buildCalendar(){
+    const grid = document.getElementById('calGrid');
+    ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d=>{ const el=document.createElement('div'); el.className='dow'; el.textContent=d; grid.appendChild(el); });
+    const firstDay = new Date(2026,9,1).getDay();
+    for(let i=0;i<firstDay;i++) grid.appendChild(document.createElement('div'));
+    for(let d=1; d<=31; d++){
+      const el = document.createElement('div'); el.className='day'; el.textContent=d;
+      if(d===24) el.classList.add('mark');
+      grid.appendChild(el);
+    }
+  })();
+
+  function renderWish(name, text, when){
+    const item = document.createElement('div');
+    item.className = 'wish';
+    const who = document.createElement('div'); who.className='who'; who.textContent = name;
+    const body = document.createElement('div'); body.textContent = text;
+    item.appendChild(who); item.appendChild(body);
+    if(when){ const w = document.createElement('div'); w.className='when-w'; w.textContent = when; item.appendChild(w); }
+    document.getElementById('wishList').prepend(item);
+  }
+  async function loadWishes(){
+    const status = document.getElementById('wishStatus');
+    if(!backendReady()) return;
+    const data = await getFromSheet();
+    if(data && data.wishes){
+      data.wishes.slice().reverse().forEach(w => renderWish(w.Name, w.Message, new Date(w.Timestamp).toLocaleDateString()));
+      status.textContent = `${data.wishes.length} blessing(s) so far.`;
+    }
+  }
+  async function addWish(){
+    const name = document.getElementById('wishName').value.trim() || 'A well-wisher';
+    const text = document.getElementById('wishText').value.trim();
+    if(!text) return;
+    renderWish(name, text, 'just now');
+    document.getElementById('wishText').value = '';
+    await postToSheet({type:'wish', name, message:text});
+  }
+  loadWishes();
+
+  async function submitRSVP(){
+    const name = document.getElementById('rsvpName').value.trim();
+    const attending = document.getElementById('rsvpAttend').value;
+    const guests = document.getElementById('rsvpGuests').value;
+    const message = document.getElementById('rsvpMsg').value.trim();
+    if(!name) return;
+    const confirmEl = document.getElementById('rsvpConfirm');
+    confirmEl.style.display = 'block';
+    const res = await postToSheet({type:'rsvp', name, attending, guests, message});
+    if(res.ok){
+      confirmEl.textContent = 'Thank you — your RSVP has been recorded.';
+    } else {
+      confirmEl.textContent = 'Backend not connected yet — opening an email instead so your RSVP still reaches us.';
+      const body = encodeURIComponent(`Name: ${name}\nAttending: ${attending}\nGuests: ${guests}\nMessage: ${message}`);
+      const a = document.createElement('a');
+      a.href = `mailto:?subject=${encodeURIComponent("RSVP for Athiya & Osama's Nikah")}&body=${body}`;
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+  }
+
+  function downloadICS(){
+    const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Athiya & Osama Nikah//EN",
+      "BEGIN:VEVENT","SUMMARY:Nikah Ceremony - Athiya Iram & Osama Shabbir",
+      "LOCATION:Masjid e Syedna Ali (RZ), Tumkur - 572105",
+      "DTSTART:20261024T073000Z","DTEND:20261024T090000Z","END:VEVENT","END:VCALENDAR"].join("\r\n");
+    const blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Nikah_Ceremony.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  let audioCtx, musicOn=false, musicTimer=null;
+  function getCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+  function pluckNote(freq, time, dur=1.9){
+    const ctx = getCtx(); const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = 'triangle'; osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(0.05, time+0.06);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time+dur);
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(time); osc.stop(time+dur);
+  }
+  function startMusic(){
+    if(musicOn) return; musicOn = true;
+    document.getElementById('musicIcon').textContent = '❚❚'; document.getElementById('musicLabel').textContent = 'Pause';
+    const ctx = getCtx(); if(ctx.state === 'suspended') ctx.resume();
+    const notes = [293.66,349.23,392.00,349.23,311.13,293.66]; let step = 0;
+    musicTimer = setInterval(()=>{ if(!musicOn) return; pluckNote(notes[step % notes.length], ctx.currentTime, 2.0); step++; }, 1200);
+  }
+  function stopMusic(){
+    musicOn = false; document.getElementById('musicIcon').textContent = '♪'; document.getElementById('musicLabel').textContent = 'Music';
+    if(musicTimer) clearInterval(musicTimer);
+  }
+  function toggleMusic(){ if(getCtx().state === 'suspended') getCtx().resume(); musicOn ? stopMusic() : startMusic(); }
+
+  /* ---------------- AMBIENT: drifting rose petals ---------------- */
+  const aCanvas = document.getElementById('ambientCanvas'), aCtx = aCanvas.getContext('2d');
+  const bCanvas = document.getElementById('burstCanvas'), bCtx = bCanvas.getContext('2d');
+  function resizeCanvases(){ aCanvas.width=window.innerWidth; aCanvas.height=window.innerHeight; bCanvas.width=window.innerWidth; bCanvas.height=window.innerHeight; }
+  window.addEventListener('resize', resizeCanvases); resizeCanvases();
+
+  function drawPetal(ctx, x, y, r, rot, color, alpha){
+    ctx.save(); ctx.translate(x,y); ctx.rotate(rot); ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.moveTo(0,-r); ctx.quadraticCurveTo(r*0.9,0,0,r); ctx.quadraticCurveTo(-r*0.9,0,0,-r);
+    ctx.fillStyle = color; ctx.fill();
+    ctx.restore();
+  }
+  let petals = [];
+  for(let i=0;i<18;i++){
+    petals.push({ x:Math.random()*window.innerWidth, y:Math.random()*window.innerHeight,
+      r:Math.random()*5+4, rot:Math.random()*Math.PI, rotSpd:(Math.random()-0.5)*0.012,
+      driftY:Math.random()*0.3+0.1, driftX:(Math.random()-0.5)*0.25, phase:Math.random()*Math.PI*2, brass: Math.random()>0.5 });
+  }
+  function loopPetals(t){
+    aCtx.clearRect(0,0,aCanvas.width,aCanvas.height);
+    const blush = getComputedStyle(document.documentElement).getPropertyValue('--blush') || '#E7B9C4';
+    const brass = getComputedStyle(document.documentElement).getPropertyValue('--accent-light') || '#E9C784';
+    petals.forEach(p=>{
+      p.y += p.driftY; p.x += p.driftX + Math.sin((t||0)/1900 + p.phase)*0.15; p.rot += p.rotSpd;
+      if(p.y > aCanvas.height + 10){ p.y = -10; p.x = Math.random()*aCanvas.width; }
+      if(p.x > aCanvas.width + 10) p.x = -10; if(p.x < -10) p.x = aCanvas.width + 10;
+      const alpha = 0.3 + 0.25*Math.sin((t||0)/1000 + p.phase);
+      drawPetal(aCtx, p.x, p.y, p.r, p.rot, p.brass ? brass : blush, Math.max(0.15,alpha));
+    });
+    requestAnimationFrame(loopPetals);
+  }
+  requestAnimationFrame(loopPetals);
+
+  function burstParticles(cx, cy){
+    const palette = ['#B8823E','#E9C784','#E7B9C4','#7A2643'];
+    const particles = Array.from({length:44}, ()=>({
+      x:cx, y:cy, vx:(Math.random()-0.5)*13, vy:(Math.random()-0.9)*13,
+      r:Math.random()*6+4, color:palette[Math.floor(Math.random()*palette.length)], rot:Math.random()*Math.PI, alpha:1
+    }));
+    function step(){
+      bCtx.clearRect(0,0,bCanvas.width,bCanvas.height);
+      let alive = false;
+      particles.forEach(p=>{
+        p.x+=p.vx; p.y+=p.vy; p.vy+=0.3; p.rot+=0.05; p.alpha-=0.015;
+        if(p.alpha>0){ alive = true; drawPetal(bCtx, p.x, p.y, p.r, p.rot, p.color, Math.max(0,p.alpha)); }
+      });
+      if(alive) requestAnimationFrame(step); else bCtx.clearRect(0,0,bCanvas.width,bCanvas.height);
+    }
+    step();
+  }
+</script>
+</body>
+</html>

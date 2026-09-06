@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guest Responses | Athiya &amp; Osama</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#260D18; --bg-mid:#4A1B2C; --card-bg:#FFFDF9; --card-inner:#FBF1E7;
+    --ink:#33141E; --ink-soft:#8C6670; --accent:#B8823E; --accent-light:#E9C784; --accent-deep:#7C5322;
+    --rose-deep:#7A2643; --line:rgba(184,130,62,0.35);
+    --green:#3F7D52; --green-bg:#E9F3EC; --red:#A5423A; --red-bg:#F7EAE9;
+    --shadow:0 16px 40px rgba(38,13,24,0.22);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:radial-gradient(circle at 50% 0%, var(--bg-mid) 0%, var(--bg-deep) 70%); min-height:100vh; display:flex; justify-content:center; font-family:'Cormorant Garamond', serif; color:var(--ink);}
+  h1,h2,h3{font-family:'Marcellus', serif; font-weight:400; color:var(--rose-deep);}
+  .icn{display:inline-block; vertical-align:middle; fill:none;} .icn.solid{fill:currentColor;}
+
+  .shell{ width:100%; max-width:640px; min-height:100vh; background:var(--card-inner); position:relative; box-shadow:0 0 70px rgba(0,0,0,0.5);}
+  .watermark{ position:absolute; top:0; left:0; right:0; bottom:0; z-index:0; opacity:0.14; pointer-events:none;}
+
+  .top{ position:relative; z-index:1; background:linear-gradient(180deg, var(--bg-deep), var(--bg-mid)); padding:38px 24px 30px; text-align:center; color:#fff;}
+  .top .ar{ font-family:'Amiri', serif; color:var(--accent-light); font-size:1rem; margin-bottom:6px;}
+  .top h1{ color:#fff; font-size:1.6rem;}
+  .top .sub{ color:var(--accent-light); font-size:0.85rem; margin-top:6px; letter-spacing:0.04em;}
+  .refresh{ margin-top:18px; display:inline-flex; align-items:center; gap:7px; padding:9px 20px; border-radius:22px; background:transparent; border:1.5px solid var(--accent); color:var(--accent-light); font-family:'Cormorant Garamond', serif; font-size:0.9rem; cursor:pointer;}
+  .refresh:hover{ background:var(--accent); color:var(--bg-deep);}
+  .refresh .icn{ width:14px; height:14px;}
+  .refresh.spinning .icn{ animation:spin 0.8s linear infinite;}
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+
+  .content{ position:relative; z-index:1; padding:26px 18px 50px;}
+  .stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:30px;}
+  .stat{ background:var(--card-bg); border:1px solid var(--line); border-radius:8px; padding:16px 8px; text-align:center;}
+  .stat .n{ font-family:'Marcellus', serif; font-size:1.6rem; color:var(--rose-deep);}
+  .stat .l{ font-size:0.68rem; color:var(--ink-soft); margin-top:3px;}
+
+  .section-head{ display:flex; align-items:center; gap:8px; margin:0 4px 14px;}
+  .section-head svg{ width:18px; height:18px; color:var(--accent);}
+  .section-head h2{ font-size:1.3rem;}
+  .count-pill{ margin-left:auto; font-size:0.72rem; color:var(--ink-soft); background:var(--card-bg); border:1px solid var(--line); border-radius:12px; padding:3px 10px;}
+
+  .card{ position:relative; background:var(--card-bg); border-radius:4px; box-shadow:var(--shadow); overflow:hidden; margin-bottom:26px;}
+  .card-dome{ height:44px; background:linear-gradient(160deg, var(--rose-deep), var(--accent-deep)); border-radius:50% 50% 0 0/100% 100% 0 0; display:flex; align-items:center; justify-content:center;}
+  .card-dome svg{ width:17px; height:17px; color:var(--accent-light);}
+  .row{ padding:16px 20px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
+  .row:last-child{ border-bottom:none;}
+  .row .name{ font-family:'Marcellus', serif; color:var(--rose-deep); font-size:1.05rem; flex:1 1 auto; min-width:120px;}
+  .row .msg{ flex-basis:100%; font-size:0.92rem; color:var(--ink); margin-top:2px;}
+  .row .meta{ flex-basis:100%; font-size:0.7rem; color:var(--ink-soft); margin-top:2px;}
+  .badge{ font-size:0.72rem; padding:4px 11px; border-radius:12px; font-family:'Cormorant Garamond', serif;}
+  .badge.yes{ background:var(--green-bg); color:var(--green);}
+  .badge.no{ background:var(--red-bg); color:var(--red);}
+  .guests{ font-size:0.8rem; color:var(--ink-soft);}
+
+  .empty{ text-align:center; color:var(--ink-soft); font-size:0.92rem; padding:30px 20px;}
+  .search{ width:100%; padding:10px 14px; margin-bottom:14px; border:1px solid var(--line); border-radius:8px; background:var(--card-bg); font-family:'Cormorant Garamond', serif; font-size:0.95rem; color:var(--ink);}
+  .search:focus{ outline:none; border-color:var(--accent);}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="star8solid" viewBox="0 0 100 100"><polygon points="50,4 58,32 83,17 68,42 96,50 68,58 83,83 58,68 50,96 42,68 17,83 32,58 4,50 32,42 17,17 42,32" fill="currentColor"/></symbol>
+  <symbol id="star8outline" viewBox="0 0 100 100"><polygon points="50,4 58,32 83,17 68,42 96,50 68,58 83,83 58,68 50,96 42,68 17,83 32,58 4,50 32,42 17,17 42,32" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></symbol>
+  <symbol id="iconRefresh" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M20 11A8 8 0 1 0 19 15M20 11V5M20 11H14"/></symbol>
+  <pattern id="starTile" width="54" height="54" patternUnits="userSpaceOnUse">
+    <g transform="translate(27,27) scale(0.24)" fill="none" stroke="var(--accent)" stroke-width="6" opacity="0.5">
+      <polygon transform="translate(-50,-50)" points="50,4 58,32 83,17 68,42 96,50 68,58 83,83 58,68 50,96 42,68 17,83 32,58 4,50 32,42 17,17 42,32"/>
+    </g>
+  </pattern>
+</svg>
+
+<div class="shell">
+  <div class="watermark"><svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#starTile)"/></svg></div>
+
+  <div class="top">
+    <div class="ar">تَأْكِيدُ الْحُضُور</div>
+    <h1>Guest Responses</h1>
+    <div class="sub">Athiya &amp; Osama · 24 October 2026</div>
+    <button class="refresh" id="refreshBtn" onclick="loadAll()"><svg class="icn" viewBox="0 0 24 24"><use href="#iconRefresh"/></svg><span>Refresh</span></button>
+  </div>
+
+  <div class="content">
+    <div class="stats">
+      <div class="stat"><div class="n" id="statTotal">0</div><div class="l">Responses</div></div>
+      <div class="stat"><div class="n" id="statYes">0</div><div class="l">Attending</div></div>
+      <div class="stat"><div class="n" id="statNo">0</div><div class="l">Can't attend</div></div>
+      <div class="stat"><div class="n" id="statGuests">0</div><div class="l">Total guests</div></div>
+    </div>
+
+    <div class="section-head"><svg class="icn outline" viewBox="0 0 100 100"><use href="#star8outline"/></svg><h2>RSVPs</h2><span class="count-pill" id="rsvpCount">0</span></div>
+    <input class="search" id="rsvpSearch" placeholder="Search by name..." oninput="renderRSVPs()">
+    <div class="card">
+      <div class="card-dome"><svg class="icn solid" viewBox="0 0 100 100"><use href="#star8solid"/></svg></div>
+      <div id="rsvpList"></div>
+    </div>
+
+    <div class="section-head"><svg class="icn outline" viewBox="0 0 100 100"><use href="#star8outline"/></svg><h2>Blessings</h2><span class="count-pill" id="wishCount">0</span></div>
+    <div class="card">
+      <div class="card-dome"><svg class="icn solid" viewBox="0 0 100 100"><use href="#star8solid"/></svg></div>
+      <div id="wishList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CONFIG = { APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxiL7UytJN8RPYILzIvxM8jZ6dk8U8ENskebRWtwxproWL_V4l6jVo-Qpma83q-BcUI/exec' };
+  let allRsvps = [], allWishes = [];
+
+  async function loadAll(){
+    const btn = document.getElementById('refreshBtn');
+    btn.classList.add('spinning');
+    if(!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL.includes('PASTE_YOUR')){
+      document.getElementById('rsvpList').innerHTML = '<div class="empty">Backend URL not set yet — paste your Apps Script web app URL into CONFIG.APPS_SCRIPT_URL.</div>';
+      document.getElementById('wishList').innerHTML = '';
+      btn.classList.remove('spinning');
+      return;
+    }
+    try{
+      const res = await fetch(CONFIG.APPS_SCRIPT_URL);
+      const data = await res.json();
+      allRsvps = (data.rsvps || []).slice().reverse();
+      allWishes = (data.wishes || []).slice().reverse();
+      renderStats(); renderRSVPs(); renderWishes();
+    }catch(err){
+      document.getElementById('rsvpList').innerHTML = '<div class="empty">Could not load responses. Check the backend URL and try again.</div>';
+    }
+    btn.classList.remove('spinning');
+  }
+
+  function renderStats(){
+    const yes = allRsvps.filter(r => r.Attending === 'Attending').length;
+    const no = allRsvps.filter(r => r.Attending !== 'Attending').length;
+    const guests = allRsvps.filter(r => r.Attending === 'Attending').reduce((sum,r)=> sum + (parseInt(r.Guests)||0), 0);
+    document.getElementById('statTotal').textContent = allRsvps.length;
+    document.getElementById('statYes').textContent = yes;
+    document.getElementById('statNo').textContent = no;
+    document.getElementById('statGuests').textContent = guests;
+    document.getElementById('rsvpCount').textContent = allRsvps.length;
+    document.getElementById('wishCount').textContent = allWishes.length;
+  }
+
+  function fmtDate(ts){
+    const d = new Date(ts);
+    return isNaN(d) ? '' : d.toLocaleDateString(undefined,{day:'numeric', month:'short', year:'numeric'});
+  }
+
+  function renderRSVPs(){
+    const q = document.getElementById('rsvpSearch').value.trim().toLowerCase();
+    const list = document.getElementById('rsvpList');
+    const filtered = allRsvps.filter(r => (r.Name||'').toLowerCase().includes(q));
+    if(filtered.length === 0){ list.innerHTML = '<div class="empty">No RSVPs yet.</div>'; return; }
+    list.innerHTML = filtered.map(r => `
+      <div class="row">
+        <span class="name">${escapeHtml(r.Name)}</span>
+        <span class="badge ${r.Attending === 'Attending' ? 'yes' : 'no'}">${escapeHtml(r.Attending)}</span>
+        ${r.Attending === 'Attending' ? `<span class="guests">${escapeHtml(String(r.Guests))} guest(s)</span>` : ''}
+        ${r.Message ? `<span class="msg">${escapeHtml(r.Message)}</span>` : ''}
+        <span class="meta">${fmtDate(r.Timestamp)}</span>
+      </div>`).join('');
+  }
+
+  function renderWishes(){
+    const list = document.getElementById('wishList');
+    if(allWishes.length === 0){ list.innerHTML = '<div class="empty">No blessings yet.</div>'; return; }
+    list.innerHTML = allWishes.map(w => `
+      <div class="row">
+        <span class="name">${escapeHtml(w.Name)}</span>
+        <span class="msg">${escapeHtml(w.Message)}</span>
+        <span class="meta">${fmtDate(w.Timestamp)}</span>
+      </div>`).join('');
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  }
+
+  loadAll();
+</script>
+</body>
+</html>
